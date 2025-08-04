@@ -20,8 +20,7 @@ void AWeapon::BeginPlay()
 
 void AWeapon::AttachModules()
 {
-
-	checkf(WeaponModules.Num() < 1, TEXT("No Weapon Modules attached to %s"), *GetName());
+	checkf(FiringModule != nullptr || WeaponModules.Num() > 0, TEXT("No Weapon Modules attached to %s"), *GetName());
 
 	IWeaponModule::Execute_AttachModule(FiringModule, this);
 	

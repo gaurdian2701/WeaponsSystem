@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Weapon_Modules/Weapon_Module_Base.h"
+#include "Weapon_Modules/FiringMode_Modules/UFiringMode_WeaponModule.h"
 #include "Recoil_WeaponModule.generated.h"
 
 
@@ -21,11 +22,22 @@ protected:
 	float WeaponMass = 0.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Resistance Constant")
 	float ResistanceConstant = 0.0f;
+	UPROPERTY()
+	TObjectPtr<UFiringMode_WeaponModule> FiringModule = nullptr;
 
+private:
+	FTimerHandle RecoilTimerHandle = FTimerHandle();
 	float RecoilAngle = 0.0f;
-	float RecoilLength = 0.0f;
+	float CurrentRecoilAngle = 0.0f;
+	float KickbackStrength = 0.0f;
+	float CurrentKickbackStrength = 0.0f;
+	bool CanRecoil = false;
+	bool KickbackEnded = false;
 	const int RECOIL_MULTIPLIER = 1000;
 	const int M_TO_CM = 100;
+
+	void DoRecoilForCurrentShot(float DeltaTime);
+	inline void AfterRecoil();
 
 public:
 	URecoil_WeaponModule();
@@ -34,7 +46,12 @@ public:
 	virtual bool ParentIsValid_Implementation() override;
 
 protected:
+	virtual void TickComponent(float DeltaTime,
+		enum ELevelTick TickType,
+		FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void BeginPlay() override;
 	virtual void CalculateRecoilAngle();
-	virtual void CalculateRecoilLength();
+	virtual void CalculateKickbackStrength();
 };
+
+

@@ -15,11 +15,12 @@ class UE_GUNPROJECT_API UFiringMode_WeaponModule : public UWeapon_Module_Base
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Firing Mode Type")
-	EWeaponFiringType FiringTypeForModule = EWeaponFiringType::CONTINUOUS;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Firing Data Array")
-	TArray<FFiringData> FiringData;
+	UPROPERTY(EditDefaultsOnly, Category = "Firing Data Object")
+	TSubclassOf<UFiringDataObject> FiringDataClass;
+
+	UPROPERTY()
+	TObjectPtr<UFiringDataObject> FiringDataObject = nullptr;
 
 protected:
 	void BeginPlay() override;
@@ -32,9 +33,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void FireBurstRound();
-
-	UFUNCTION()
-	void OnFireEnded();
 	
 private:
 	FTimerHandle FiringTimerHandle = FTimerHandle();
@@ -42,9 +40,14 @@ private:
 	int8 CurrentFireDataIndex = 0;
 	const int MaxFiringDataArrayLength = 256;
 
+private:
+	inline void OnFireEnded();
+
 public:
 	virtual void IntegrateWithAttack_Implementation() override;
 	virtual void AttachModule_Implementation(AActor* Actor) override;
 	virtual bool ParentIsValid_Implementation() override;
 	bool CanModuleFire() const;
+	bool IsCurrentlyFiring() const;
+	float GetDelayUntilNextRoundFired() const;
 };

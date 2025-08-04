@@ -4,8 +4,10 @@
 void UFiringMode_WeaponModule::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (FiringData.Num() < 1)
+
+	FiringDataObject = NewObject<UFiringDataObject>(this, FiringDataClass);
+
+	if (FiringDataObject->FiringDataArray.Num() < 1)
 		ToggleCanFire(false);
 }
 
@@ -24,7 +26,7 @@ void UFiringMode_WeaponModule::IntegrateWithAttack_Implementation()
 	if (CanFire)
 		ToggleCanFire(false);
 
-	switch (FiringTypeForModule)
+	switch (FiringDataObject->FiringTypeForModule)
 	{
 	default:
 	case EWeaponFiringType::CONTINUOUS:
@@ -39,16 +41,17 @@ void UFiringMode_WeaponModule::IntegrateWithAttack_Implementation()
 void UFiringMode_WeaponModule::FireContinuousRound()
 {
 	GetWorld()->GetTimerManager().SetTimer(FiringTimerHandle, this, &UFiringMode_WeaponModule::OnFireEnded,
-		FiringData[0].DelayAfterFire, false, -1);
+	                                       FiringDataObject->FiringDataArray[0].DelayAfterFire, false, -1);
 }
 
 void UFiringMode_WeaponModule::FireBurstRound()
 {
-	if (CurrentFireDataIndex == FiringData.Num())
-		CurrentFireDataIndex = 0;
-	
 	GetWorld()->GetTimerManager().SetTimer(FiringTimerHandle, this, &UFiringMode_WeaponModule::OnFireEnded,
-	FiringData[CurrentFireDataIndex++].DelayAfterFire, false, -1);
+	                                       FiringDataObject->FiringDataArray[CurrentFireDataIndex++].DelayAfterFire,
+	                                       false, -1);
+
+	if (CurrentFireDataIndex == FiringDataObject->FiringDataArray.Num())
+		CurrentFireDataIndex = 0;
 }
 
 void UFiringMode_WeaponModule::ToggleCanFire(bool Toggle)
@@ -56,7 +59,7 @@ void UFiringMode_WeaponModule::ToggleCanFire(bool Toggle)
 	CanFire = Toggle;
 }
 
-void UFiringMode_WeaponModule::OnFireEnded()
+inline void UFiringMode_WeaponModule::OnFireEnded()
 {
 	ToggleCanFire(true);
 }
@@ -64,4 +67,21 @@ void UFiringMode_WeaponModule::OnFireEnded()
 bool UFiringMode_WeaponModule::CanModuleFire() const
 {
 	return CanFire;
+}
+
+bool UFiringMode_WeaponModule::IsCurrentlyFiring() const
+{
+	return FiringTimerHandle.IsValid();
+}
+
+float UFiringMode_WeaponModule::GetDelayUntilNextRoundFired() const
+{
+	switch (FiringDataObject->FiringTypeForModule)
+	{
+	default:
+	case EWeaponFiringType::CONTINUOUS:
+		return FiringDataObject->FiringDataArray[0].DelayAfterFire;
+	case EWeaponFiringType::BURST:
+		return FiringDataObject->FiringDataArray[CurrentFireDataIndex].DelayAfterFire;
+	}
 }

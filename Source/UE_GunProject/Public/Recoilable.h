@@ -15,6 +15,6 @@ class IRecoilable
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void DoRecoil(float RecoilAngle, float RecoilLength);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void DoRecoil(float RecoilAngle, float KickbackStrength);
 };
