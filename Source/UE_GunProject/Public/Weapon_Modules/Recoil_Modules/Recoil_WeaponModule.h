@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RecoilData.h"
 #include "Weapon_Modules/Weapon_Module_Base.h"
 #include "Weapon_Modules/FiringMode_Modules/UFiringMode_WeaponModule.h"
 #include "Recoil_WeaponModule.generated.h"
@@ -14,14 +15,10 @@ class UE_GUNPROJECT_API URecoil_WeaponModule : public UWeapon_Module_Base
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Bullet Mass(Increases Recoil)")
-	float BulletMass = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Bullet Velocity(Increases Recoil)")
-	float BulletVelocity = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon Mass(Decreases Recoil)")
-	float WeaponMass = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Resistance Constant")
-	float ResistanceConstant = 0.0f;
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil Data")
+	TSubclassOf<URecoilData> RecoilDataClass;
+	UPROPERTY()
+	TObjectPtr<URecoilData> RecoilDataObject = nullptr;
 	UPROPERTY()
 	TObjectPtr<UFiringMode_WeaponModule> FiringModule = nullptr;
 
@@ -33,11 +30,11 @@ private:
 	float CurrentKickbackStrength = 0.0f;
 	bool CanRecoil = false;
 	bool KickbackEnded = false;
-	const int RECOIL_MULTIPLIER = 1000;
 	const int M_TO_CM = 100;
 
 	void DoRecoilForCurrentShot(float DeltaTime);
 	inline void AfterRecoil();
+	inline void ShowRecoilVisual();
 
 public:
 	URecoil_WeaponModule();

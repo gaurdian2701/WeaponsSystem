@@ -10,7 +10,10 @@ URecoil_WeaponModule::URecoil_WeaponModule()
 void URecoil_WeaponModule::BeginPlay()
 {
 	Super::BeginPlay();
+	RecoilDataObject = NewObject<URecoilData>(this, RecoilDataClass);
+	checkf(RecoilDataObject != nullptr, TEXT("Recoil Data Object is null"));
 	FiringModule = GetOwner()->GetComponentByClass<UFiringMode_WeaponModule>();
+	checkf(FiringModule != nullptr, TEXT("No Firing Module attached to parent"));
 }
 
 void URecoil_WeaponModule::AttachModule_Implementation(AActor* Actor)
@@ -52,12 +55,14 @@ void URecoil_WeaponModule::TickComponent(float DeltaTime, enum ELevelTick TickTy
 
 void URecoil_WeaponModule::CalculateRecoilAngle()
 {
-	RecoilAngle =  (2 * BulletMass) / WeaponMass * RECOIL_MULTIPLIER;
+	RecoilAngle =  (2 * RecoilDataObject->BulletMass / RecoilDataObject->WeaponMass) * RecoilDataObject->RecoilAlpha;
 }
 
 void URecoil_WeaponModule::CalculateKickbackStrength()
 {
-	KickbackStrength = (pow(BulletMass, 2) * pow(BulletVelocity, 2))/(2 * WeaponMass * ResistanceConstant);
+	KickbackStrength = (pow(RecoilDataObject->BulletMass, 2)
+		* pow(RecoilDataObject->BulletVelocity, 2))/
+			(2 * RecoilDataObject->WeaponMass * RecoilDataObject->ResistanceConstant);
 }
 
 void URecoil_WeaponModule::DoRecoilForCurrentShot(float DeltaTime)
@@ -71,15 +76,19 @@ void URecoil_WeaponModule::DoRecoilForCurrentShot(float DeltaTime)
 	{
 		CurrentKickbackStrength = FMath::Lerp(CurrentKickbackStrength, 0,
 	DeltaTime/(FiringModule->GetDelayUntilNextRoundFired()/2));
+		
+		CurrentRecoilAngle = FMath::Lerp(CurrentRecoilAngle, 0,
+			DeltaTime/(FiringModule->GetDelayUntilNextRoundFired()/2));
 	}
 	else
 	{
 		CurrentKickbackStrength = FMath::Lerp(CurrentKickbackStrength, KickbackStrength,
 	DeltaTime/(FiringModule->GetDelayUntilNextRoundFired()/2));
-	}
 
-	CurrentRecoilAngle = FMath::Lerp(CurrentRecoilAngle, RecoilAngle, DeltaTime);
-	IRecoilable::Execute_DoRecoil(ParentActor, CurrentRecoilAngle, CurrentKickbackStrength * M_TO_CM);
+		CurrentRecoilAngle = FMath::Lerp(CurrentRecoilAngle, RecoilAngle,
+			DeltaTime/(FiringModule->GetDelayUntilNextRoundFired()/2));
+	}
+	ShowRecoilVisual();
 }
 
 inline void URecoil_WeaponModule::AfterRecoil()
@@ -87,5 +96,12 @@ inline void URecoil_WeaponModule::AfterRecoil()
 	CanRecoil = false;
 	KickbackEnded = false;
 	CurrentKickbackStrength = 0.0f;
+	ShowRecoilVisual();
+}
+
+void URecoil_WeaponModule::ShowRecoilVisual()
+{
+	IRecoilable::Execute_DoRecoil(ParentActor, FMath::RadiansToDegrees(CurrentRecoilAngle),
+	CurrentKickbackStrength * M_TO_CM);
 }
 

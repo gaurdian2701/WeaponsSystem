@@ -2,9 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "FiringData.h"
-#include "WeaponFiringType.h"
 #include "UObject/Object.h"
-#include "Weapon_Modules/WeaponModule.h"
 #include "Weapon_Modules/Weapon_Module_Base.h"
 #include "UFiringMode_WeaponModule.generated.h"
 
