@@ -1,4 +1,4 @@
-﻿#include "Weapon_Modules/Recoil_Modules/Recoil_WeaponModule.h"
+﻿ #include "Weapon_Modules/Recoil_Modules/Recoil_WeaponModule.h"
 #include "Recoilable.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -18,11 +18,8 @@ void URecoil_WeaponModule::BeginPlay()
 
 void URecoil_WeaponModule::AttachModule_Implementation(AActor* Actor)
 {
-	if (Execute_ParentIsValid(this))
-		ParentActor = Actor;
-	else
-		UKismetSystemLibrary::QuitGame(GetWorld(),
-	nullptr, EQuitPreference::Quit, false);
+	checkf(Execute_ParentIsValid(this), TEXT("Recoil Module Parent is invalid!"));
+	ParentActor = Actor;
 }
 
 void URecoil_WeaponModule::IntegrateWithAttack_Implementation()

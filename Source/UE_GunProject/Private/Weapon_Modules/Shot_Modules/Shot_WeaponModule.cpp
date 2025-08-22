@@ -1,5 +1,7 @@
 ﻿#include "Weapon_Modules/Shot_Modules/Shot_WeaponModule.h"
 
+#include "Weapons/Weapon.h"
+
 UShot_WeaponModule::UShot_WeaponModule()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -12,6 +14,7 @@ void UShot_WeaponModule::BeginPlay()
 
 void UShot_WeaponModule::AttachModule_Implementation(AActor* Actor)
 {
+	Super::AttachModule_Implementation(Actor);
 }
 
 void UShot_WeaponModule::IntegrateWithAttack_Implementation()

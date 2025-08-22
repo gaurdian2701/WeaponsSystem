@@ -15,6 +15,7 @@ class UE_GUNPROJECT_API AWeapon : public AActor, public IFireable
 public:
 	virtual FVector GetFiringStartPosition_Implementation() override;
 	virtual void Fire_Implementation() override;
+	inline TObjectPtr<AActor> GetWeaponOwner();
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,6 +24,8 @@ protected:
 	void InitWeapon(AActor* Parent);
 
 protected:
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<AActor> WeaponOwner = nullptr;
 	UPROPERTY()
 	TObjectPtr<UFiringMode_WeaponModule> FiringModule = nullptr;
 	UPROPERTY()

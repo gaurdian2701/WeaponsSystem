@@ -9,11 +9,8 @@ void UWeapon_Module_Base::IntegrateWithAttack_Implementation()
 
 void UWeapon_Module_Base::AttachModule_Implementation(AActor* Actor)
 {
-	if (Execute_ParentIsValid(this))
-		ParentActor = GetOwner();
-	else
-		UKismetSystemLibrary::QuitGame(GetWorld(),
-			nullptr, EQuitPreference::Quit, false);
+	checkf(Execute_ParentIsValid(this), TEXT("Parent is invalid for %s"), *this->GetName());
+	ParentActor = GetOwner();
 }
 
 inline bool UWeapon_Module_Base::ParentIsValid_Implementation()

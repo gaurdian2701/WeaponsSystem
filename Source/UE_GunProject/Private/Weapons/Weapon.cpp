@@ -49,3 +49,8 @@ void AWeapon::Fire_Implementation()
 	}
 }
 
+TObjectPtr<AActor> AWeapon::GetWeaponOwner()
+{
+	return WeaponOwner;
+}
+
