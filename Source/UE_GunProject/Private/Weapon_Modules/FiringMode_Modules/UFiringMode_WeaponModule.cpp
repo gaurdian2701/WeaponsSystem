@@ -5,7 +5,6 @@ void UFiringMode_WeaponModule::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FiringDataObject = NewObject<UFiringDataObject>(this, FiringDataClass);
 	checkf(FiringDataObject != nullptr, TEXT("Firing Data Object is null"));
 
 	if (FiringDataObject->FiringDataArray.Num() < 1)

@@ -4,7 +4,7 @@
 #include "UObject/Object.h"
 #include "RecoilData.generated.h"
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(BlueprintType, Blueprintable, DefaultToInstanced, EditInlineNew)
 class UE_GUNPROJECT_API URecoilData : public UObject
 {
 	GENERATED_BODY()

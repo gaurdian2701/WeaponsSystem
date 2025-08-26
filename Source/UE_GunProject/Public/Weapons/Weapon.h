@@ -4,7 +4,6 @@
 #include "Fireable.h"
 #include "GameFramework/Actor.h"
 #include "Weapon_Modules/FiringMode_Modules/UFiringMode_WeaponModule.h"
-#include "Weapon_Modules/Shot_Modules/Shot_WeaponModule.h"
 #include "Weapon.generated.h"
 
 UCLASS(Blueprintable, BlueprintType)

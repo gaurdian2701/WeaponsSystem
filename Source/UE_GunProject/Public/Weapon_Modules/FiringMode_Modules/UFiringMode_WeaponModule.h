@@ -7,18 +7,15 @@
 #include "UFiringMode_WeaponModule.generated.h"
 
 
-UCLASS(Blueprintable, BlueprintType)
+UCLASS(Blueprintable, BlueprintType, meta = (BlueprintSpawnableComponent))
 class UE_GUNPROJECT_API UFiringMode_WeaponModule : public UWeapon_Module_Base
 {
 	GENERATED_BODY()
 
 protected:
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Firing Data Object")
-	TSubclassOf<UFiringDataObject> FiringDataClass;
-
-	UPROPERTY()
-	TObjectPtr<UFiringDataObject> FiringDataObject = nullptr;
+	UPROPERTY(EditDefaultsOnly, Instanced, Category = "Firing Data Object")
+	UFiringDataObject* FiringDataObject;
 
 protected:
 	void BeginPlay() override;

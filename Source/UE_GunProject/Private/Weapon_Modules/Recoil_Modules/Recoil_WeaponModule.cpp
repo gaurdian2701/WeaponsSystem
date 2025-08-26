@@ -10,7 +10,6 @@ URecoil_WeaponModule::URecoil_WeaponModule()
 void URecoil_WeaponModule::BeginPlay()
 {
 	Super::BeginPlay();
-	RecoilDataObject = NewObject<URecoilData>(this, RecoilDataClass);
 	checkf(RecoilDataObject != nullptr, TEXT("Recoil Data Object is null"));
 	FiringModule = GetOwner()->GetComponentByClass<UFiringMode_WeaponModule>();
 	checkf(FiringModule != nullptr, TEXT("No Firing Module attached to parent"));

@@ -15,10 +15,8 @@ class UE_GUNPROJECT_API URecoil_WeaponModule : public UWeapon_Module_Base
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Recoil Data")
-	TSubclassOf<URecoilData> RecoilDataClass;
-	UPROPERTY()
-	TObjectPtr<URecoilData> RecoilDataObject = nullptr;
+	UPROPERTY(EditDefaultsOnly, Instanced, Category = "Recoil Data")
+	TObjectPtr<URecoilData> RecoilDataObject;
 	UPROPERTY()
 	TObjectPtr<UFiringMode_WeaponModule> FiringModule = nullptr;
 
